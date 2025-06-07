@@ -53,28 +53,30 @@ services:
     depends_on:
       - prometheus
     restart: unless-stopped
-  traefik:
-    image: traefik:v3.4.1          # estável (pushed há 4 dias) :contentReference[oaicite:1]{index=1}
-    command:
-      - "--providers.file.directory=/dynamic"
-      - "--providers.file.watch=true"
-    ports:
-      - "80:80"
-      - "443:443"
-    volumes:
-      - "./traefik/traefik.yml:/traefik.yml:ro"
-      - "./traefik/dynamic:/dynamic:ro"
-      - "letsencrypt:/letsencrypt"
-    restart: unless-stoppedi
-  pg_backup:
-    image: alpine:3.20
-    volumes:
-      - ./scripts:/scripts:ro
-      - pgdata:/var/lib/postgresql/data:ro
-      - ./backups:/backups
-    env_file: .env
-    entrypoint: ["/bin/sh", "-c", "crond -f -l 2"]
-    restart: unless-stopped
+
+  # traefik:
+  #   image: traefik:v3.4.1          # estável (pushed há 4 dias)
+  #   command:
+  #     - "--providers.file.directory=/dynamic"
+  #     - "--providers.file.watch=true"
+  #   ports:
+  #     - "80:80"
+  #     - "443:443"
+  #   volumes:
+  #     - "./traefik/traefik.yml:/traefik.yml:ro"
+  #     - "./traefik/dynamic:/dynamic:ro"
+  #     - "letsencrypt:/letsencrypt"
+  #   restart: unless-stoppedi
+
+  # pg_backup:
+  #   image: alpine:3.20
+  #   volumes:
+  #     - ./scripts:/scripts:ro
+  #     - pgdata:/var/lib/postgresql/data:ro
+  #     - ./backups:/backups
+  #   env_file: .env
+  #   entrypoint: ["/bin/sh", "-c", "crond -f -l 2"]
+  #   restart: unless-stopped
 
 
 volumes:
