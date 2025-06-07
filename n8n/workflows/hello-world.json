@@ -1,0 +1,24 @@
+{
+    "name": "daily-hello",
+    "nodes": [
+      {
+        "parameters": { "cronExpression": "0 9 * * *" },
+        "id": "Cron",
+        "type": "n8n-nodes-base.cron",
+        "name": "Cron"
+      },
+      {
+        "parameters": {
+          "fromEmail": "agent@example.com",
+          "toEmail": "you@example.com",
+          "subject": "Hello from N8N",
+          "text": "Deploy OK – N8N rodando!"
+        },
+        "id": "Email",
+        "type": "n8n-nodes-base.emailSend",
+        "name": "Email"
+      }
+    ],
+    "connections": { "Cron": { "main": [[ { "node": "Email", "type": "main", "index": 0 } ]] } }
+  }
+  

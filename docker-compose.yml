@@ -1,0 +1,54 @@
+version: "3.9"
+
+services:
+  postgres:
+    image: postgres:16-alpine
+    container_name: pg
+    env_file: .env
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+      - ./postgres/init.sql:/docker-entrypoint-initdb.d/init.sql:ro
+    restart: unless-stopped
+
+  n8n:
+    image: n8nio/n8n:latest          # ver tags em Docker Hub :contentReference[oaicite:0]{index=0}
+    container_name: n8n
+    env_file: .env
+    ports:
+      - "${N8N_PORT}:5678"
+    depends_on:
+      - postgres
+    volumes:
+      - n8n_data:/home/node/.n8n
+    restart: unless-stopped
+
+  prometheus:
+    image: prom/prometheus:latest    # tags :contentReference[oaicite:1]{index=1}
+    container_name: prometheus
+    volumes:
+      - ./prometheus/prometheus.yml:/etc/prometheus/prometheus.yml:ro
+      - promdata:/prometheus
+    ports:
+      - "9090:9090"
+    restart: unless-stopped
+
+  grafana:
+    image: grafana/grafana-oss:10.4.1 # tags :contentReference[oaicite:2]{index=2}
+    container_name: grafana
+    volumes:
+      - grafana_data:/var/lib/grafana
+      - ./grafana/provisioning:/etc/grafana/provisioning
+    environment:
+      - GF_SECURITY_ADMIN_PASSWORD=admin
+      - TZ=${TZ}
+    ports:
+      - "3000:3000"
+    depends_on:
+      - prometheus
+    restart: unless-stopped
+
+volumes:
+  pgdata:
+  n8n_data:
+  promdata:
+  grafana_data:

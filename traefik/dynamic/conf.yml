@@ -1,0 +1,14 @@
+http:
+  routers:
+    n8n:
+      rule: "Host(`n8n.exemplo.com`)"
+      entryPoints: ["websecure"]
+      service: n8n
+      tls:
+        certResolver: letsencrypt
+
+  services:
+    n8n:
+      loadBalancer:
+        servers:
+          - url: "http://n8n:5678"
