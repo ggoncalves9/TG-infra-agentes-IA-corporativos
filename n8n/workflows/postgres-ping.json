@@ -1,0 +1,36 @@
+{
+    "name": "postgres-ping",
+    "nodes": [
+      {
+        "id": "Cron",
+        "type": "n8n-nodes-base.cron",
+        "name": "Cron a cada minuto",
+        "parameters": { "cronExpression": "*/1 * * * *" }
+      },
+      {
+        "id": "Insert",
+        "type": "n8n-nodes-base.postgres",
+        "name": "Insert Log",
+        "parameters": {
+          "operation": "executeQuery",
+          "query": "INSERT INTO logs (workflow, status) VALUES ('postgres-ping','RUN');"
+        },
+        "credentials": { "credentialType": "postgres" }
+      },
+      {
+        "id": "Count",
+        "type": "n8n-nodes-base.postgres",
+        "name": "Count Rows",
+        "parameters": {
+          "operation": "executeQuery",
+          "query": "SELECT COUNT(*) FROM logs;"
+        },
+        "credentials": { "credentialType": "postgres" }
+      }
+    ],
+    "connections": {
+      "Cron": { "main": [[{ "node": "Insert", "type": "main", "index": 0 }]] },
+      "Insert": { "main": [[{ "node": "Count", "type": "main", "index": 0 }]] }
+    }
+  }
+  
